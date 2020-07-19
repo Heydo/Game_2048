@@ -9,7 +9,7 @@ header {
 /* 设置标题 “2048” 的样式 */
 header h1 {
   font-family: Arial;
-  font-size: 40px;
+  font-size: 30px;
   font-weight: bold;
 }
 
@@ -18,12 +18,13 @@ header h1 {
 header #newGameButton {
   /* 设置显示样式 */
   display: block;
-  margin: 20px auto;
+  margin: 5px auto;
 
   width: 100px;
-  padding: 10px 10px;
+  padding: 5px 5px;
   background-color: #8f7a66;
   /* 设置文字样式 */
+  font-size: 5px;
   font-family: Arial;
   color: white;
   /* 设置为圆角 */
@@ -41,8 +42,8 @@ header #newGameButton:hover {
 /* 设置分数显示的样式 */
 header p {
   font-family: Arial;
-  font-size: 25px;
-  margin: 20px auto;
+  font-size: 20px;
+  margin: 10px auto;
 }
 
 /* 4*4棋盘格设定样式 */
@@ -51,7 +52,7 @@ header p {
   height: 460px;
   padding: 20px;
 
-  margin: 50px auto;
+  margin: 10px auto;
   background-color: #bbada0;
 
   border-radius: 10px;
