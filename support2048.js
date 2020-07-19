@@ -87,6 +87,21 @@ function canMoveLeft(board) {
   return false
 }
 
+// 判断当前的局势是否能够想左移动
+function canMoveRight(board) {
+  for (var i = 0; i < 4; i++) {
+    for (var j = 2; j > 0; j--) {
+      // 如果当前元素处有数字
+      if (board[i][j] != 0) {
+        if (board[i][j + 1] == 0 || board[i][j + 1] == board[i][j]) {
+          return true
+        }
+      }
+    }
+  }
+  return false
+}
+
 // 判断路径上没有其他元素
 function noBlockHorizontal(row, col1, col2, board) {
   for (var i = col1 + 1; i < col2; i++) {

@@ -190,6 +190,43 @@ function moveLeft() {
   return true
 }
 
+function moveRight() {
+  // 判断当前的局势是否能够想左移动
+  if (!canMoveRight(board))
+    return false
+  // moveRight(遍历前三列)
+  for (var i = 0; i < 4; i++) {
+    for (var j = 2; j >= 0; j--) {
+      // 如果当前元素处有数字
+      if (board[i][j] != 0) {
+        // 对当前元素右边的元素都进行一次判定
+        for (var k = 3; k > j; k--) {
+          if (board[i][k] == 0 && noBlockHorizontal(i, j, k, board)) {
+            // 当 当前元素左边的元素为0，并且移动路径中没有障碍物时，发生一次移动
+            // 从i,j移动到i,k
+            showMoveAnimation(i, j, i, k)
+            board[i][k] = board[i][j]
+            board[i][j] = 0
+            // 这次判断结束
+            continue
+          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board)) {
+            // 当 当前元素左边的元素与当前元素相等，并且移动路径中没有障碍物时，发生一次移动
+            // 从i,j移动到i,k
+            showMoveAnimation(i, j, i, k)
+            // 数字相加
+            board[i][k] += board[i][j];
+            board[i][j] = 0
+            // 这次判断结束
+            continue
+          }
+        }
+      }
+    }
+  }
+  setTimeout("updateBoardView()", 200);
+  return true
+}
+
 function isGameOver() {
 
 }
