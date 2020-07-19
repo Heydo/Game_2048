@@ -7,9 +7,28 @@ hasConflicted = new Array()
 
 // 页面DOM元素加载结束后，立即执行
 $(document).ready(function () {
+  prepareForMobile();
   // 开始一个新的游戏(头部的标签按钮相应的也是这个函数)
   newGame();
 });
+
+function prepareForMobile() {
+  if (documentWidth > 500) {
+    gridContainerWidth = 500
+    cellSideLength = 100
+    cellSpace = 20
+  }
+  // 对大方块css进行调整
+  $('#grid-container').css('width', gridContainerWidth - 2 * cellSpace)
+  $('#grid-container').css('height', gridContainerWidth - 2 * cellSpace)
+  $('#grid-container').css('padding', cellSpace)
+  $('#grid-container').css('border-radius', 0.02 * gridContainerWidth)
+  // 对小方块css进行调整
+  $('.grid-cell').css('width', cellSideLength)
+  $('.grid-cell').css('height', cellSideLength)
+  $('.grid-cell').css('border-radius', 0.02 * cellSideLength)
+}
+
 
 // 定义newGame函数
 function newGame() {
@@ -68,12 +87,12 @@ function updateBoardView() {
         theNumberCell.css('width', '0px')
         theNumberCell.css('height', '0px')
         // 将number-cell的位置放在grid-celld(100*100px)的中间
-        theNumberCell.css('top', getPosTop(i) + 50)
-        theNumberCell.css('left', getPosLeft(j) + 50)
+        theNumberCell.css('top', getPosTop(i) + cellSideLength / 2)
+        theNumberCell.css('left', getPosLeft(j) + cellSideLength / 2)
       } else {
         // 此时number-cell是显示的
-        theNumberCell.css('width', '100px')
-        theNumberCell.css('height', '100px')
+        theNumberCell.css('width', cellSideLength)
+        theNumberCell.css('height', cellSideLength)
         // 将number-cell的位置与grid-celld一致
         theNumberCell.css('top', getPosTop(i))
         theNumberCell.css('left', getPosLeft(j))
@@ -86,6 +105,8 @@ function updateBoardView() {
       hasConflicted[i][j] = false
     }
   }
+  $('.number-cell').css('line-height', cellSideLength + 'px')
+  $('.number-cell').css('font-size', 0.6 * cellSideLength + 'px')
 }
 
 // 随机在格子里生成一个数字

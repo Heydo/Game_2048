@@ -1,10 +1,19 @@
+// 获取当前设备的屏幕宽度
+var documentWidth = window.screen.availWidth;
+// 定义游戏大方块的宽度
+var gridContainerWidth = 0.92 * documentWidth
+// 定义每一个小方块的边长
+var cellSideLength = 0.18 * documentWidth
+// 定义小方块之间的间距
+var cellSpace = 0.04 * documentWidth
+
 // 计算小格子的css定位值
 function getPosTop(i) {
-  return 20 + i * 120
+  return cellSpace + i * (cellSideLength + cellSpace)
 }
 
 function getPosLeft(j) {
-  return 20 + j * 120
+  return cellSpace + j * (cellSideLength + cellSpace)
 }
 
 // 样式会随着显示数字的不同而不同
