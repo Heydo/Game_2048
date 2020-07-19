@@ -5,6 +5,12 @@ var score = 0
 // 记录每一个小格子是否已经发生过一次叠加
 hasConflicted = new Array()
 
+// 声明触控时发生的坐标
+var startX = 0
+var startY = 0
+var endX = 0
+var endY = 0
+
 // 页面DOM元素加载结束后，立即执行
 $(document).ready(function () {
   prepareForMobile();
@@ -152,6 +158,7 @@ $(document).keydown(function (event) {
   switch (event.keyCode) {
     // ←
     case 37:
+      event.preventDefault()
       // 移动所有能向左移动的函数
       if (moveLeft()) {
         // 移动成功以后，生成一个新的数字
@@ -162,7 +169,8 @@ $(document).keydown(function (event) {
       break;
       // ↑
     case 38:
-      // 移动所有能向左移动的函数
+      event.preventDefault()
+      // 移动所有能向上移动的函数
       if (moveUp()) {
         // 移动成功以后，生成一个新的数字
         setTimeout("generateOneNumber()", 210)
@@ -172,7 +180,8 @@ $(document).keydown(function (event) {
       break;
       // →
     case 39:
-      // 移动所有能向左移动的函数
+      event.preventDefault()
+      // 移动所有能向右移动的函数
       if (moveRight()) {
         // 移动成功以后，生成一个新的数字
         setTimeout("generateOneNumber()", 210)
@@ -183,7 +192,8 @@ $(document).keydown(function (event) {
       break;
       // ↓
     case 40:
-      // 移动所有能向左移动的函数
+      event.preventDefault()
+      // 移动所有能向下移动的函数
       if (moveDown()) {
         // 移动成功以后，生成一个新的数字
         setTimeout("generateOneNumber()", 210)
@@ -195,6 +205,69 @@ $(document).keydown(function (event) {
       break;
   }
 });
+
+// 捕捉触控事件
+document.addEventListener('touchstart', function (event) {
+  startX = event.touches[0].pageX
+  startY = event.touches[0].pageY
+})
+// document.addEventListener('touchmove', function (event) {
+//   event.preventDefault()
+// })
+document.addEventListener('touchend', function (event) {
+  endX = event.changedTouches[0].pageX
+  endY = event.changedTouches[0].pageY
+  // 在触摸结束后，判断这一次触摸的方向
+  var deltaX = endX - startX
+  var deltaY = endY - startY
+  // 对deltaX于deltaY进行判断，小于某个值时，认为是点击而不触发操作。
+  if (Math.abs(deltaX) < 0.3 * documentWidth && Math.abs(deltaY) < 0.3 * documentWidth) {
+    return
+  }
+  if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+    // X 轴
+    if (deltaX > 0) {
+      // 向右
+      // 移动所有能向右移动的函数
+      if (moveRight()) {
+        // 移动成功以后，生成一个新的数字
+        setTimeout("generateOneNumber()", 210)
+        // 判断游戏是否结束
+        setTimeout("isGameOver()", 300)
+      }
+    } else {
+      // 向左
+      if (moveLeft()) {
+        // 移动成功以后，生成一个新的数字
+        setTimeout("generateOneNumber()", 210)
+        // 判断游戏是否结束
+        setTimeout("isGameOver()", 300)
+      }
+    }
+  } else {
+    // Y 轴
+    if (deltaY > 0) {
+      // 向下
+      // 移动所有能向下移动的函数
+      if (moveDown()) {
+        // 移动成功以后，生成一个新的数字
+        setTimeout("generateOneNumber()", 210)
+        // 判断游戏是否结束
+        setTimeout("isGameOver()", 300)
+      }
+    } else {
+      // 向上
+      // 移动所有能向上移动的函数
+      if (moveUp()) {
+        // 移动成功以后，生成一个新的数字
+        setTimeout("generateOneNumber()", 210)
+        // 判断游戏是否结束
+        setTimeout("isGameOver()", 300)
+      }
+    }
+  }
+})
+
 
 function moveLeft() {
   // 判断当前的局势是否能够想左移动
