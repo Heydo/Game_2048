@@ -102,10 +102,49 @@ function canMoveRight(board) {
   return false
 }
 
-// 判断路径上没有其他元素
+// 判断当前的局势是否能够向上移动
+function canMoveUp() {
+  for (var j = 0; j < 4; j++) {
+    for (var i = 1; i < 4; i++) {
+      // 如果当前元素处不为o
+      if (board[i][j] != 0) {
+        if (board[i - 1][j] == 0 || board[i - 1][j] == board[i][j]) {
+          return true
+        }
+      }
+    }
+  }
+  return false
+}
+
+// 判断当前的局势是否能够向下移动
+function canMoveDown() {
+  for (var j = 0; j < 4; j++) {
+    for (var i = 2; i >= 0; i--) {
+      // 如果当前元素处不为o
+      if (board[i][j] != 0) {
+        if (board[i + 1][j] == 0 || board[i + 1][j] == board[i][j]) {
+          return true
+        }
+      }
+    }
+  }
+  return false
+}
+
+// 判断横向路径上没有其他元素
 function noBlockHorizontal(row, col1, col2, board) {
   for (var i = col1 + 1; i < col2; i++) {
     if (board[row][i] != 0) {
+      return false
+    }
+  }
+  return true
+}
+// 判断纵向路径上没有其他元素
+function noBlockVertical(row1, row2, col, board) {
+  for (var i = row1 + 1; i < row2; i++) {
+    if (board[i][col] != 0) {
       return false
     }
   }

@@ -22,4 +22,5 @@ function showMoveAnimation(fromX, fromY, toX, toY) {
     top: getPosTop(toX),
     left: getPosLeft(toY)
   }, 200)
+  console.log("移动成功");
 }

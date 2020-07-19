@@ -227,6 +227,80 @@ function moveRight() {
   return true
 }
 
+function moveUp() {
+  // 判断当前的局势是否能够向上移动
+  if (!canMoveUp(board))
+    return false
+  // moveUp（遍历后三行）
+  for (var j = 0; j < 4; j++) {
+    for (var i = 1; i < 4; i++) {
+      // 如果当前元素处有数字
+      if (board[i][j] != 0) {
+        // 对当前元素上面的元素都进行一次判定
+        for (var k = 0; k < i; k++) {
+          if (board[k][j] == 0 && noBlockVertical(k, i, j, board)) {
+            // 当 当前元素上边的元素为0，并且移动路径中没有障碍物时，发生一次移动
+            // 从i,j移动到k,j
+            showMoveAnimation(i, j, k, j)
+            board[k][j] = board[i][j]
+            board[i][j] = 0
+            // 这次判断结束
+            continue
+          } else if (board[k][j] == board[i][j] && noBlockVertical(k, i, j, board)) {
+            // 当 当前元素上边的元素与当前元素相等，并且移动路径中没有障碍物时，发生一次移动
+            // 从i,j移动到k,j
+            showMoveAnimation(i, j, k, j)
+            // 数字相加
+            board[k][j] += board[i][j];
+            board[i][j] = 0
+            // 这次判断结束
+            continue
+          }
+        }
+      }
+    }
+  }
+  setTimeout("updateBoardView()", 200);
+  return true
+}
+
+function moveDown() {
+  // 判断当前的局势是否能够向上移动
+  if (!canMoveDown(board))
+    return false
+  // moveDown（遍历前三行）
+  for (var j = 0; j < 4; j++) {
+    for (var i = 2; i >= 0; i--) {
+      // 如果当前元素处有数字
+      if (board[i][j] != 0) {
+        // 对当前元素上面的元素都进行一次判定
+        for (var k = 3; k > i; k--) {
+          if (board[k][j] == 0 && noBlockVertical(i, k, j, board)) {
+            // 当 当前元素上边的元素为0，并且移动路径中没有障碍物时，发生一次移动
+            // 从i,j移动到k,j
+            showMoveAnimation(i, j, k, j)
+            board[k][j] = board[i][j]
+            board[i][j] = 0
+            // 这次判断结束
+            continue
+          } else if (board[k][j] == board[i][j] && noBlockVertical(i, k, j, board)) {
+            // 当 当前元素上边的元素与当前元素相等，并且移动路径中没有障碍物时，发生一次移动
+            // 从i,j移动到k,j
+            showMoveAnimation(i, j, k, j)
+            // 数字相加
+            board[k][j] += board[i][j];
+            board[i][j] = 0
+            // 这次判断结束
+            continue
+          }
+        }
+      }
+    }
+  }
+  setTimeout("updateBoardView()", 200);
+  return true
+}
+
 function isGameOver() {
 
 }
