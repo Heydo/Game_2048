@@ -2,6 +2,8 @@
 var board = new Array()
 // 存储游戏分数
 var score = 0
+// 记录每一个小格子是否已经发生过一次叠加
+hasConflicted = new Array()
 
 // 页面DOM元素加载结束后，立即执行
 $(document).ready(function () {
@@ -36,14 +38,19 @@ function init() {
   for (var i = 0; i < 4; i++) {
     // 将每一个元素再一次设置为一个数组。使得board成为一个二维数组
     board[i] = new Array()
+    hasConflicted[i] = new Array()
     // 将二维数组board中的每一个值都设置为0
     for (var j = 0; j < 4; j++) {
       board[i][j] = 0
+      hasConflicted[i][j] = false
     }
   }
 
   // 通知前端需要对number-cell元素进行样式和内容上的设定。
   updateBoardView();
+
+  // 初始化分数
+  score = 0
 }
 
 function updateBoardView() {
@@ -76,6 +83,7 @@ function updateBoardView() {
         // 显示数字的值
         theNumberCell.text(board[i][j])
       }
+      hasConflicted[i][j] = false
     }
   }
 }
@@ -83,18 +91,32 @@ function updateBoardView() {
 // 随机在格子里生成一个数字
 function generateOneNumber() {
   // 首先判断当前情况，还能不能在生成一个数字了。
-  if (nospace(board))
+  if (noSpace(board))
     return false;
   // 随机一个位置(random()生成0~1的随机浮点数)
   var randx = parseInt(Math.floor(Math.random() * 4))
   var randy = parseInt(Math.floor(Math.random() * 4))
   // 判断随机位置上是否有数字
-  while (true) {
+  var times = 0
+  while (times < 50) {
     if (board[randx][randy] == 0)
       break;
     // 重新生成位置
     randx = parseInt(Math.floor(Math.random() * 4))
     randy = parseInt(Math.floor(Math.random() * 4))
+
+    times++
+  }
+  if (times == 50) {
+    // 人工寻找一个可以生成的位置
+    for (var i = 0; i < 4; i++) {
+      for (var j = 0; j < 4; j++) {
+        if (board[i][j] == 0) {
+          randx = i;
+          randy = j
+        }
+      }
+    }
   }
   // 随机一个数字(同等概率生成2或4)
   var randNumber = Math.random() < 0.5 ? 2 : 4
@@ -112,9 +134,9 @@ $(document).keydown(function (event) {
       // 移动所有能向左移动的函数
       if (moveLeft()) {
         // 移动成功以后，生成一个新的数字
-        generateOneNumber()
+        setTimeout("generateOneNumber()", 210)
         // 判断游戏是否结束
-        isGameOver()
+        setTimeout("isGameOver()", 300)
       }
       break;
       // ↑
@@ -122,9 +144,9 @@ $(document).keydown(function (event) {
       // 移动所有能向左移动的函数
       if (moveUp()) {
         // 移动成功以后，生成一个新的数字
-        generateOneNumber()
+        setTimeout("generateOneNumber()", 210)
         // 判断游戏是否结束
-        isGameOver()
+        setTimeout("isGameOver()", 300)
       }
       break;
       // →
@@ -132,9 +154,9 @@ $(document).keydown(function (event) {
       // 移动所有能向左移动的函数
       if (moveRight()) {
         // 移动成功以后，生成一个新的数字
-        generateOneNumber()
+        setTimeout("generateOneNumber()", 210)
         // 判断游戏是否结束
-        isGameOver()
+        setTimeout("isGameOver()", 300)
       }
 
       break;
@@ -143,9 +165,9 @@ $(document).keydown(function (event) {
       // 移动所有能向左移动的函数
       if (moveDown()) {
         // 移动成功以后，生成一个新的数字
-        generateOneNumber()
+        setTimeout("generateOneNumber()", 210)
         // 判断游戏是否结束
-        isGameOver()
+        setTimeout("isGameOver()", 300)
       }
       break;
     default:
@@ -172,13 +194,18 @@ function moveLeft() {
             board[i][j] = 0
             // 这次判断结束
             continue
-          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, k, j, board)) {
+          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, k, j, board) && !hasConflicted[i][k]) {
             // 当 当前元素左边的元素与当前元素相等，并且移动路径中没有障碍物时，发生一次移动
             // 从i,j移动到i,k
             showMoveAnimation(i, j, i, k)
             // 数字相加
             board[i][k] += board[i][j];
             board[i][j] = 0
+            // 加分
+            score += board[i][k]
+            // 将分数变化展示到前台
+            updateScore(score)
+            hasConflicted[i][k] = true
             // 这次判断结束
             continue
           }
@@ -209,13 +236,18 @@ function moveRight() {
             board[i][j] = 0
             // 这次判断结束
             continue
-          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board)) {
+          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board) && !hasConflicted[i][k]) {
             // 当 当前元素左边的元素与当前元素相等，并且移动路径中没有障碍物时，发生一次移动
             // 从i,j移动到i,k
             showMoveAnimation(i, j, i, k)
             // 数字相加
             board[i][k] += board[i][j];
             board[i][j] = 0
+            // 加分
+            score += board[i][k]
+            // 将分数变化展示到前台
+            updateScore(score)
+            hasConflicted[i][k] = true
             // 这次判断结束
             continue
           }
@@ -246,13 +278,18 @@ function moveUp() {
             board[i][j] = 0
             // 这次判断结束
             continue
-          } else if (board[k][j] == board[i][j] && noBlockVertical(k, i, j, board)) {
+          } else if (board[k][j] == board[i][j] && noBlockVertical(k, i, j, board) && !hasConflicted[k][j]) {
             // 当 当前元素上边的元素与当前元素相等，并且移动路径中没有障碍物时，发生一次移动
             // 从i,j移动到k,j
             showMoveAnimation(i, j, k, j)
             // 数字相加
             board[k][j] += board[i][j];
             board[i][j] = 0
+            // 加分
+            score += board[k][j]
+            // 将分数变化展示到前台
+            updateScore(score)
+            hasConflicted[k][j] = true
             // 这次判断结束
             continue
           }
@@ -283,13 +320,18 @@ function moveDown() {
             board[i][j] = 0
             // 这次判断结束
             continue
-          } else if (board[k][j] == board[i][j] && noBlockVertical(i, k, j, board)) {
+          } else if (board[k][j] == board[i][j] && noBlockVertical(i, k, j, board) && !hasConflicted[k][j]) {
             // 当 当前元素上边的元素与当前元素相等，并且移动路径中没有障碍物时，发生一次移动
             // 从i,j移动到k,j
             showMoveAnimation(i, j, k, j)
             // 数字相加
             board[k][j] += board[i][j];
             board[i][j] = 0
+            // 加分
+            score += board[k][j]
+            // 将分数变化展示到前台
+            updateScore(score)
+            hasConflicted[k][j] = true
             // 这次判断结束
             continue
           }
@@ -302,5 +344,11 @@ function moveDown() {
 }
 
 function isGameOver() {
+  if (noSpace(board) && noMove(board)) {
+    gameOver()
+  }
+}
 
+function gameOver() {
+  alert('游戏结束')
 }

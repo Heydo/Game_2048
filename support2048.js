@@ -61,7 +61,7 @@ function getNumberColor(number) {
 }
 
 // 判断棋盘格内还有没有空间
-function nospace(board) {
+function noSpace(board) {
   for (var i = 0; i < 4; i++) {
     for (var j = 0; j < 4; j++) {
       if (board[i][j] == 0) {
@@ -87,7 +87,7 @@ function canMoveLeft(board) {
   return false
 }
 
-// 判断当前的局势是否能够想左移动
+// 判断当前的局势是否能够想右移动
 function canMoveRight(board) {
   for (var i = 0; i < 4; i++) {
     for (var j = 2; j > 0; j--) {
@@ -149,4 +149,11 @@ function noBlockVertical(row1, row2, col, board) {
     }
   }
   return true
+}
+
+function noMove(board) {
+  if (canMoveDown(board) || canMoveLeft(board) || canMoveRight(board) || canMoveUp(board)) {
+    return true
+  }
+  return false
 }
